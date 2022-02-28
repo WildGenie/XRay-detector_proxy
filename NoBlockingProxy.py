@@ -14,11 +14,24 @@ class ChannelProxy(QObject, NS.Monitor):
         super(ChannelProxy,  self).__init__(None)
         self.input_queue = Queue.Queue()
         self.output_queue = Queue.Queue()
-        self.detector_thread  = NS.SocketClientThread(name+"_detector", (detector_ip, detector_port), self.input_queue, self.output_queue)
-        self.proxy_thread  = NS.ProxyThread(name+"_proxy", service_port, self.input_queue, self.output_queue, self)
+        self.detector_thread = NS.SocketClientThread(
+            f'{name}_detector',
+            (detector_ip, detector_port),
+            self.input_queue,
+            self.output_queue,
+        )
+
+        self.proxy_thread = NS.ProxyThread(
+            f'{name}_proxy',
+            service_port,
+            self.input_queue,
+            self.output_queue,
+            self,
+        )
+
         self.startTimer = QTimer(self)
 
- 
+
         self.listener = listener
 	
     def start_thread(self):
@@ -47,7 +60,6 @@ class ImgProxy (ChannelProxy):
     def post_process_data(self, cmd):
         #caculate the image bandwidth here
         totalbytes += len(cmd)
-        pass
 
     def set_clear_flag(self):
         self.detector_thread.set_clear_flag()
