@@ -46,9 +46,9 @@ class SocketClientThread(threading.Thread):
             
 
     def ping(self):
-        cmd = "[PI]"
-        if(self.input_queue.empty()):
-            self.pingFlag = True            
+        if (self.input_queue.empty()):
+            self.pingFlag = True
+            cmd = "[PI]"
             self.input_queue.put(cmd)                
         
     def setMonitor(self, monitor):
